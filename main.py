@@ -3,10 +3,10 @@ from pymongo import MongoClient
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 
-token = "7326821694:AAHsi6XohwO-qpcJxfDgzZ8M0CYl6iXzmDY"
+token = "YOUR TOKEN HERE"
 bot = telebot.TeleBot(token)
 
-url = "mongodb+srv://JiqueGR:6nyk9fSLuOSeo8BL@deepsystem.itxh5.mongodb.net/DeepSystem?retryWrites=true&w=majority&appName=DeepSystem"
+url = "MONGO URL HERE"
 client = MongoClient(url)
 db = client['DeepSystem']
 collection = db['Bank']
@@ -47,8 +47,8 @@ def callback_query(call):
             lastTransferType = lastRecord.get('lastTransferType', 'None')
             lastTransferTime = lastRecord.get('lastTransferTime', 'None')
             bot.send_message(call.message.chat.id,
-                             f"Your balance is: R${balance} "
-                             f"\nLast transfer value: R${lastTransferValue} "
+                             f"Your balance is: ${balance} "
+                             f"\nLast transfer value: ${lastTransferValue} "
                              f"\nLast transfer type: {lastTransferType} "
                              f"\nLast transfer time: {lastTransferTime}")
         else:
@@ -70,7 +70,7 @@ def processDepositStep(message):
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("Confirm", callback_data="confirmDeposit"),
                        InlineKeyboardButton("Cancel", callback_data="cancelDeposit"))
-            bot.send_message(message.chat.id, f"Do you want to deposit R${value}?", reply_markup=markup)
+            bot.send_message(message.chat.id, f"Do you want to deposit ${value}?", reply_markup=markup)
         else:
             raise ValueError
     except ValueError:
@@ -94,7 +94,7 @@ def confirmDeposit(call):
         insertBalanceRecord(model)
 
         bot.send_message(call.message.chat.id,
-                         f"Deposit of R${temporaryValue} succeeded! Your new balance is ${newBalance}.")
+                         f"Deposit of ${temporaryValue} succeeded! Your new balance is ${newBalance}.")
         start(call.message)
     elif call.data == "cancelDeposit":
         bot.send_message(call.message.chat.id, "Deposit canceled")
@@ -111,7 +111,7 @@ def processWithdrawStep(message):
                 markup = InlineKeyboardMarkup()
                 markup.add(InlineKeyboardButton("Confirm", callback_data="confirmWithdraw"),
                            InlineKeyboardButton("Cancel", callback_data="cancelWithdraw"))
-                bot.send_message(message.chat.id, f"Do you want to withdraw R${value}?", reply_markup=markup)
+                bot.send_message(message.chat.id, f"Do you want to withdraw ${value}?", reply_markup=markup)
             else:
                 bot.send_message(message.chat.id, "Insufficient balance. Please enter a lower amount.")
                 msg = bot.send_message(message.chat.id, "How much do you want to withdraw?")
@@ -139,7 +139,7 @@ def confirmar_retiro(call):
         insertBalanceRecord(model)
 
         bot.send_message(call.message.chat.id,
-                         f"Withdrawal of R${temporaryValue} succeeded! Your new balance is ${newBalance}.")
+                         f"Withdrawal of ${temporaryValue} succeeded! Your new balance is ${newBalance}.")
         start(call.message)
     elif call.data == "cancelWithdraw":
         bot.send_message(call.message.chat.id, "Withdrawal canceled")
